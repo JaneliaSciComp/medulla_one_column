@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chemical synapses between neurons of the fly visual medulla</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+  </head>
+  <body>
+    <h2 align="center">Chemical synapses between neurons of the fly visual medulla</h2>
+    <div align="center">
+	    <h3>Search the synapses found for specified cell names:</h3>
+	    <form name="search" action="search" method="post" target="_blank">
+	    	<table>
+	    		<tr>
+	    			<td>Pre-synaptic cell names:</td>
+	    			<td><input type="text" name="pre" /></td>
+	    		</tr>
+	    		<tr>
+	    			<td>Post-synaptic cell names:</td>
+	    			<td><input type="text" name="post" /></td>
+	    		</tr>
+	    		<tr>
+	    			<td></td>
+	    			<td><input type="submit" value="Show Connections" /></td>
+	    		</tr>
+	    		<tr>
+	    			<td></td>
+	    			<td>Note: Results will open in new window.</td>
+	    		</tr>
+	    	</table>
+	    </form>
+	</div>
+	<div align="center">
+		<h3>Examples</h3>
+		<div style="width:500px">
+			<p align="left">Entries can end with * (asterisk) and matches any body name 
+				with the given prefix.  Separate entries with commas.
+				For example, "L1*, Mi1, T*" matches any prefix L1, the body Mi1, and
+				any body prefixed with T.
+			</p>
+		</div>
+		<h3>Disclaimers</h3>
+		<div style="width:500px">
+			<ol align="left">
+				<li>Within a central, reference medulla column, two proofreaders attempted to 
+					assign each synaptic contact to its pre- and postsynaptic neurons. In approx. 
+					50% of the cases, they were able to complete the assignment, achieving >90% 
+					certainty for the assigned synapses. The 50% assignment rate implies that any 
+					pair of neurons in the central column (detailed here) connected with >5 
+					contacts is present with >95% probability and, similarly, any pair of neurons 
+					in the central column that is unconnected has ≤ 5 synaptic contacts (again 
+					with >95% probability).</li>
+				<li>Outside of the central column, synaptic contacts between L1 and Tm3 neurons, 
+					Tm3 and T4 neurons, and Mi1 and T4 neurons were traced by an expert 
+					proofreader. Synaptic contacts between other neurons outside the reference 
+					column were not uniformly traced.</li>
+				<li>We reserve the right to update the number of synaptic contacts in the future.</li>
+			</ol>
+			<p>For technical details, please see the online methods in (Takemura et al., 2013).</p>
+		</div>
+	</div>
+
+    <!-- JavaScript plugins (requires jQuery) -->
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+    <script src="js/respond.js"></script>
+  </body>
+</html>
