@@ -5,40 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <style>
+    	td { padding: 0.3em; }
+    </style>
   </head>
   <body>
     <h2 align="center">Chemical synapses between neurons of the fly visual medulla</h2>
     <div align="center">
-	    <h3>Search the synapses found for specified cell names:</h3>
+	    <h3>Search for synaptic contacts between specified cells:</h3>
 	    <form name="search" action="search" method="post" target="_blank">
 	    	<table>
 	    		<tr>
-	    			<td>Pre-synaptic cell names:</td>
+	    			<td>Presynaptic cell names:</td>
 	    			<td><input type="text" name="pre" /></td>
 	    		</tr>
 	    		<tr>
-	    			<td>Post-synaptic cell names:</td>
+	    			<td>Postsynaptic cell names:</td>
 	    			<td><input type="text" name="post" /></td>
 	    		</tr>
 	    		<tr>
-	    			<td></td>
-	    			<td><input type="submit" value="Show Connections" /></td>
+	    			<td colspan="2" align="center"><input type="submit" value="Show Contacts" /></td>
 	    		</tr>
 	    		<tr>
-	    			<td></td>
-	    			<td>Note: Results will open in new window.</td>
+	    			<td colspan="2" align="center">Note: Results will open in new window.</td>
 	    		</tr>
 	    	</table>
 	    </form>
 	</div>
 	<div align="center">
-		<h3>Examples</h3>
+		<h3>Instructions</h3>
 		<div style="width:500px">
-			<p align="left">Entries can end with * (asterisk) and matches any body name 
-				with the given prefix.  Separate entries with commas.
-				For example, "L1*, Mi1, T*" matches any prefix L1, the body Mi1, and
-				any body prefixed with T.
-			</p>
+			<ul align="left">
+				<li>Use an asterisk (*) as a wild card. 
+					For example, <code><strong>L1*</strong></code> 
+					would match any cells starting with L1.</li>
+				<li>Separate entries for multiple cells with commas.
+				 For example, <code><strong>L1 209, L2*</strong></code> 
+				 would match L1 209 as well as all cells
+				 starting with L2.</li>
+			</ul>
 		</div>
 		<h3>Disclaimers</h3>
 		<div style="width:500px">

@@ -249,9 +249,9 @@ func getSearchHTML(preNames, postNames string) (text string) {
 	if len(connections) > 0 {
 		connections.SortByStrength()
 		text = "<h3>Connections in order of strength:</h3>\n"
-		text += "<p>Pre-synaptic cells in search: " + preNames + "<br />\n"
-		text += "Post-synaptic cells in search: " + postNames + "</p>\n"
-		text += "<table><tr><th># Synapses</th><th>Pre-synaptic cell</th><th>Post-synaptic cell</th></tr>\n"
+		text += "<p>Presynaptic cells in search: " + preNames + "<br />\n"
+		text += "Postsynaptic cells in search: " + postNames + "</p>\n"
+		text += "<table><tr><th># Synapses</th><th>Presynaptic cell</th><th>Postsynaptic cell</th></tr>\n"
 		for _, connection := range connections {
 			text += fmt.Sprintf("<tr><td>%d</td><td>%s</td><td>%s</td></tr>", 
 				connection.strength, connection.pre, connection.post)
