@@ -184,6 +184,9 @@ func (nc *NamedConnectome) AddConnection(pre, post string, strength int) {
 func (nc NamedConnectome) MatchingNames(patterns []string) (matches []string) {
 	matches = make([]string, 0, len(patterns))
 	for _, pattern := range patterns {
+	    if len(pattern) == 0 {
+	        pattern = "*"
+	    }
 		if pattern[len(pattern)-1:] == "*" {
 			// Use as prefix
 			pattern = pattern[:len(pattern)-1]
