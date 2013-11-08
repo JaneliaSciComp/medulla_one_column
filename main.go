@@ -94,7 +94,8 @@ const (
 
 var (
 	connectivity NamedConnectome 
-	cellList CellList 
+	cellList CellList
+	cellSet map[string]bool
 
 	cellsFilename = flag.String("names", DefaultCellsFilename, "")
 	connectivityFilename = flag.String("connect", DefaultConnectivityFilename, "")
@@ -121,7 +122,6 @@ type CellList []string
 func (list CellList) Len() int           { return len(list) }
 func (list CellList) Swap(i, j int)      { list[i], list[j] = list[j], list[i] }
 func (list CellList) Less(i, j int) bool { return list[i] > list[j] }
-
 
 type Connection struct {
 	pre      string
@@ -181,7 +181,7 @@ func (nc *NamedConnectome) AddConnection(pre, post string, strength int) {
 
 // MatchingNames returns a slice of body names that have prefixes matching
 // the given slice of patterns
-func (nc NamedConnectome) MatchingNames(patterns []string) (matches []string) {
+func MatchingNames(names map[string]bool, patterns []string) (matches []string) {
 	matches = make([]string, 0, len(patterns))
 	for _, pattern := range patterns {
 	    if len(pattern) == 0 {
@@ -190,14 +190,14 @@ func (nc NamedConnectome) MatchingNames(patterns []string) (matches []string) {
 		if pattern[len(pattern)-1:] == "*" {
 			// Use as prefix
 			pattern = pattern[:len(pattern)-1]
-			for name, _ := range nc {
+			for name, _ := range names {
 				if strings.HasPrefix(name, pattern) {
 					matches = append(matches, name)
 				}
 			}
 		} else {
 			// Require exact matching
-			_, found := nc[pattern]
+			_, found := names[pattern]
 			if found {
 				matches = append(matches, pattern)
 			}
@@ -240,8 +240,8 @@ func getSearchHTML(preNames, postNames string) (text string) {
 		post[i] = strings.TrimSpace(post[i])
 	}
 	connections := make(ConnectionList, 0, len(pre))
-	for _, preName := range connectivity.MatchingNames(pre) {
-		for _, postName := range connectivity.MatchingNames(post) {
+	for _, preName := range MatchingNames(cellSet, pre) {
+		for _, postName := range MatchingNames(cellSet, post) {
 			strength, found := connectivity.ConnectionStrength(preName, postName)
 			if found {
 				connection := Connection{preName, postName, strength}
@@ -250,6 +250,7 @@ func getSearchHTML(preNames, postNames string) (text string) {
 		}
 	}
 	if len(connections) > 0 {
+	    fmt.Printf("Connections (%d): %s\n", len(connections), connections)
 		connections.SortByStrength()
 		text = "<h3>Connections in order of strength:</h3>\n"
 		text += "<p>Presynaptic cells in search: " + preNames + "<br />\n"
@@ -276,6 +277,7 @@ func ReadCellsCSV(filename string) (names CellList) {
 
 	// Reserve enough for the nature paper # of cells
 	names = make(CellList, 0, 390)
+	cellSet = make(map[string]bool)
 	csvReader := csv.NewReader(file)
 
 	// Read all connectivity matrix
@@ -289,10 +291,28 @@ func ReadCellsCSV(filename string) (names CellList) {
 			continue
 		} else {
 			names = append(names, items[0])
+			cellSet[items[0]] = true
 		}
+	}
+	if len(cellSet) != len(names) {
+	    log.Fatalf("Not all names in %s are distinct!  %d names (%d distinct)\n",
+	        filename, len(names), len(cellSet))
 	}
 	log.Printf("Read in %d cell names from %s.\n", len(names), filename)
 	return
+}
+
+func colCode(bodyNum int) string {
+    alpha := []string{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"}
+    a1 := bodyNum % 26
+    a2 := bodyNum / 26
+    var code string
+    if bodyNum <= 26 {
+        code = alpha[a1]
+    } else {
+        code = fmt.Sprintf("%s%s", alpha[a2-1], alpha[a1])
+    }
+    return code
 }
 
 
@@ -321,20 +341,20 @@ func ReadConnectionsCSV(names CellList, filename string) (connects NamedConnecto
 			log.Fatalf("ERROR: CSV has inconsistent # of columns (%d) vs cell names supplied (%d)!",
 				len(items), len(names))
 		} else {
+		    
 			preName := names[bodyNum]
 			for i := 0; i < len(items); i++ {
 				postName := names[i]
 				strength, err := strconv.Atoi(items[i])
 				if err != nil {
-					log.Fatalln("ERROR: Could not parse CSV line:",
-						items, "\nError:", err)
+					log.Fatalln("ERROR: Could not parse CSV line:", items, "\nError:", err)
 				}
 				if strength > 0 {
 					connects.AddConnection(preName, postName, strength)
 				}
 			}
+    		bodyNum++
 		}
-		bodyNum++
 	}
 	return
 }
@@ -365,6 +385,20 @@ func main() {
 
 	// Read the connections
 	connectivity = ReadConnectionsCSV(cells, *connectivityFilename)
+	
+	for name, _ := range cellSet {
+	    _, found := connectivity[name]
+	    if !found {
+	        // Check to see if it had presynaptic connections.
+	        for pre, _ := range cellSet {
+	            _, found = connectivity[pre][name]
+	            if found {
+	                fmt.Printf("Cell is only postsynaptic: %s\n", name)
+	                break
+	            }
+	        }
+	    }
+	}
 
 	fmt.Printf("Ready to serve connections between %d neurons...\n", len(connectivity))
 
