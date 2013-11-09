@@ -250,7 +250,6 @@ func getSearchHTML(preNames, postNames string) (text string) {
 		}
 	}
 	if len(connections) > 0 {
-	    fmt.Printf("Connections (%d): %s\n", len(connections), connections)
 		connections.SortByStrength()
 		text = "<h3>Connections in order of strength:</h3>\n"
 		text += "<p>Presynaptic cells in search: " + preNames + "<br />\n"
